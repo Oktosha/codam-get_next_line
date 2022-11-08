@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_next_line.h                                    :+:    :+:            */
+/*   get_next_line.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/11/08 17:25:05 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/08 17:34:23 by dkolodze      ########   odam.nl         */
+/*   Created: 2022/11/08 17:32:42 by dkolodze      #+#    #+#                 */
+/*   Updated: 2022/11/08 20:03:50 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+#include "get_next_line.h"
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000
-# endif
-
-char	*get_next_line(int fd);
-
-#endif
+char	*get_next_line(int fd)
+{
+	static char	buffer[BUFFER_SIZE];
+	static int	stored_length = 0;
+	static int	pos = 0;
+	static int	is_eof = 0;
+}
