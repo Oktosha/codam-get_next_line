@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/08 17:32:42 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/18 16:11:55 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/18 16:49:22 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*get_next_line(int fd)
 			sb_append(&result_builder, buffer + pos, i + 1);
 			result = sb_get_string(result_builder);
 			pos += i + 1;
-			sb_clear(result_builder);
+			sb_clear(&result_builder);
 			return result;
 		}
 		sb_append(&result_builder, buffer + pos, i);

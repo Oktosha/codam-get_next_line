@@ -6,11 +6,12 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/18 15:22:38 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/18 16:05:53 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/18 16:51:19 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include "get_next_line.h"
 
@@ -42,7 +43,7 @@ int sb_append(t_string_builder *string_builder, char *data, ssize_t data_length)
 	t_string_node	*node = malloc(sizeof(t_string_node));
 	if (node == NULL)
 		return -1;
-	node->data = duplicate(data, data_length);
+	node->data = str_duplicate(data, data_length);
 	if (node->data == NULL)
 	{
 		free(node);
@@ -89,7 +90,7 @@ char *sb_get_string(t_string_builder string_builder)
 	{
 		j = 0;
 		while(j < node->data_length)
-			result[i + j] = node->data[i++];
+			result[i + j++] = node->data[i];
 		i += node->data_length;
 		node = node->next;
 	}
