@@ -1,0 +1,13 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug test-01",
+			"request": "launch",
+			"type": "cppdbg",
+			"program": "${workspaceFolder}/tests/test-01.exe",
+			"cwd": "${workspaceFolder}/tests",
+			"MIMode": "lldb"
+		},
+	]
+}

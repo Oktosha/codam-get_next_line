@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/18 15:22:38 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/18 16:51:19 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/18 17:22:56 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,10 @@ char *sb_get_string(t_string_builder string_builder)
 	{
 		j = 0;
 		while(j < node->data_length)
-			result[i + j++] = node->data[i];
+		{
+			result[i + j] = node->data[j];
+			++j;
+		}
 		i += node->data_length;
 		node = node->next;
 	}
