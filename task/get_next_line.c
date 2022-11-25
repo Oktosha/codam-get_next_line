@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/08 17:32:42 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/21 22:40:31 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/25 15:11:37 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@ ssize_t	pos_after_end(ssize_t start, ssize_t len, char *str)
 	return (i);
 }
 
+void	*gnl_clear(t_string_builder *string_builder, t_read_state *read_state)
+{
+	sb_clear(string_builder);
+	read_state->len = 0;
+	read_state->pos = 0;
+	return (NULL);
+}
+
 char	*get_next_line(int fd)
 {
 	static t_read_state	state = {};
@@ -46,7 +54,7 @@ char	*get_next_line(int fd)
 		{
 			locals.read_return_value = read(fd, state.buffer, BUFFER_SIZE);
 			if (locals.read_return_value == -1)
-				return (sb_clear(&locals.builder));
+				return (gnl_clear(&locals.builder, &state));
 			if (locals.read_return_value == 0)
 				return (sb_pop_all(&locals.builder));
 			state.pos = 0;
@@ -54,7 +62,7 @@ char	*get_next_line(int fd)
 		}
 		locals.i = pos_after_end(state.pos, state.len, state.buffer);
 		if (sb_append(&locals.builder, state.buffer + state.pos, locals.i) < 0)
-			return (sb_clear(&locals.builder));
+			return (gnl_clear(&locals.builder, &state));
 		state.pos += locals.i;
 		if (state.buffer[state.pos - 1] == '\n')
 			return (sb_pop_all(&locals.builder));

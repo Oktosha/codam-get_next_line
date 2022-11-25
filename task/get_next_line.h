@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/08 17:25:05 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/21 22:45:04 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/25 14:59:19 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,11 @@
 
 char	*get_next_line(int fd);
 
-typedef struct s_string_node
-{
-	char					*data;
-	ssize_t					data_length;
-	struct s_string_node	*next;
-}	t_string_node;
-
 typedef struct s_string_builder
 {
-	struct s_string_node	*first;
-	struct s_string_node	*last;
-	ssize_t					length;
+	char	*data;
+	ssize_t	length;
+	ssize_t	capacity;
 }	t_string_builder;
 
 typedef struct s_read_state
@@ -54,6 +47,6 @@ void	sb_init(t_string_builder *string_builder);
 int		sb_append(t_string_builder *string_builder, char *data,
 			ssize_t data_length);
 char	*sb_get_string(t_string_builder string_builder);
-void	*sb_clear(t_string_builder *string_builder);
+void	sb_clear(t_string_builder *string_builder);
 
 #endif
