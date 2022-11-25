@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/18 15:22:38 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/18 17:22:56 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/21 22:54:25 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,39 +15,42 @@
 #include <sys/types.h>
 #include "get_next_line.h"
 
-void sb_init(t_string_builder *string_builder)
+void	sb_init(t_string_builder *string_builder)
 {
 	string_builder->first = NULL;
 	string_builder->last = NULL;
+	string_builder->length = 0;
 }
 
-char *str_duplicate(char *data, ssize_t data_length)
+char	*str_duplicate(char *data, ssize_t data_length)
 {
-	char *result;
-	ssize_t position;
+	char	*result;
+	ssize_t	position;
 
 	result = malloc(data_length);
 	if (result == NULL)
-		return NULL;
+		return (NULL);
 	position = 0;
-	while(position < data_length)
+	while (position < data_length)
 	{
 		result[position] = data[position];
 		++position;
 	}
-	return result;
+	return (result);
 }
 
-int sb_append(t_string_builder *string_builder, char *data, ssize_t data_length)
+int	sb_append(t_string_builder *string_builder, char *data, ssize_t data_length)
 {
-	t_string_node	*node = malloc(sizeof(t_string_node));
+	t_string_node	*node;
+
+	node = malloc(sizeof(t_string_node));
 	if (node == NULL)
-		return -1;
+		return (-1);
 	node->data = str_duplicate(data, data_length);
 	if (node->data == NULL)
 	{
 		free(node);
-		return -2;
+		return (-2);
 	}
 	node->data_length = data_length;
 	node->next = NULL;
@@ -61,35 +64,29 @@ int sb_append(t_string_builder *string_builder, char *data, ssize_t data_length)
 		string_builder->last->next = node;
 		string_builder->last = node;
 	}
-	return 0;
+	string_builder->length += node->data_length;
+	return (0);
 }
 
 // returns NULL if no nodes are stored
-char *sb_get_string(t_string_builder string_builder)
+char	*sb_get_string(t_string_builder string_builder)
 {
-	ssize_t i;
-	ssize_t j;
-	char	*result;
-	t_string_node *node;
+	ssize_t			i;
+	ssize_t			j;
+	char			*result;
+	t_string_node	*node;
 
 	if (string_builder.first == NULL)
-		return NULL;
-	i = 0;
-	node = string_builder.first;
-	while(node != NULL)
-	{
-		i += node->data_length;
-		node = node->next;
-	}
-	result = malloc(sizeof(char) * (i + 1));
+		return (NULL);
+	result = malloc(sizeof(char) * (string_builder.length + 1));
 	if (result == NULL)
-		return NULL;
+		return (NULL);
 	node = string_builder.first;
 	i = 0;
-	while(node != NULL)
+	while (node != NULL)
 	{
 		j = 0;
-		while(j < node->data_length)
+		while (j < node->data_length)
 		{
 			result[i + j] = node->data[j];
 			++j;
@@ -97,15 +94,17 @@ char *sb_get_string(t_string_builder string_builder)
 		i += node->data_length;
 		node = node->next;
 	}
-	result[i] = '\0';
-	return result;
+	result[string_builder.length] = '\0';
+	return (result);
 }
 
-void sb_clear(t_string_builder *string_builder)
+void	*sb_clear(t_string_builder *string_builder)
 {
-	t_string_node *node = string_builder->first;
-	t_string_node *temp = NULL;
-	while(node != NULL)
+	t_string_node	*node;
+	t_string_node	*temp;
+
+	node = string_builder->first;
+	while (node != NULL)
 	{
 		free(node->data);
 		temp = node->next;
@@ -114,4 +113,6 @@ void sb_clear(t_string_builder *string_builder)
 	}
 	string_builder->first = NULL;
 	string_builder->last = NULL;
+	string_builder->length = 0;
+	return (NULL);
 }

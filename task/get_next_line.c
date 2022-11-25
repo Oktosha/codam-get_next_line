@@ -6,7 +6,7 @@
 /*   By: dkolodze <dkolodze@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/08 17:32:42 by dkolodze      #+#    #+#                 */
-/*   Updated: 2022/11/18 16:49:22 by dkolodze      ########   odam.nl         */
+/*   Updated: 2022/11/21 22:40:31 by dkolodze      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,50 +15,48 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
+char	*sb_pop_all(t_string_builder *string_builder)
+{
+	char	*result;
+
+	result = sb_get_string(*string_builder);
+	sb_clear(string_builder);
+	return (result);
+}
+
+ssize_t	pos_after_end(ssize_t start, ssize_t len, char *str)
+{
+	ssize_t	i;
+
+	i = 1;
+	while (i + start < len && str[i + start - 1] != '\n')
+		++i;
+	return (i);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE];
-	static int	stored_length = 0;
-	static int	pos = 0;
+	static t_read_state	state = {};
+	t_local_read_state	locals;
 
-	ssize_t				read_return_value;
-	t_string_builder	result_builder;
-	char				*result;
-	ssize_t					i;
-
-	sb_init(&result_builder);
-	while(1)
+	sb_init(&locals.builder);
+	while (1)
 	{
-		if (pos == stored_length)
+		if (state.pos == state.len)
 		{
-			read_return_value = read(fd, buffer, BUFFER_SIZE);
-			if (read_return_value == -1)
-			{
-				sb_clear(&result_builder);
-				return NULL;
-			}
-			if (read_return_value == 0)
-			{
-				result = sb_get_string(result_builder);
-				sb_clear(&result_builder);
-				return result;
-			}
-			pos = 0;
-			stored_length = read_return_value;
+			locals.read_return_value = read(fd, state.buffer, BUFFER_SIZE);
+			if (locals.read_return_value == -1)
+				return (sb_clear(&locals.builder));
+			if (locals.read_return_value == 0)
+				return (sb_pop_all(&locals.builder));
+			state.pos = 0;
+			state.len = locals.read_return_value;
 		}
-		i = 0;
-		while(i + pos < stored_length && buffer[i + pos] != '\n')
-			++i;
-		if (i + pos < stored_length)
-		{
-			sb_append(&result_builder, buffer + pos, i + 1);
-			result = sb_get_string(result_builder);
-			pos += i + 1;
-			sb_clear(&result_builder);
-			return result;
-		}
-		sb_append(&result_builder, buffer + pos, i);
-		pos += i;
+		locals.i = pos_after_end(state.pos, state.len, state.buffer);
+		if (sb_append(&locals.builder, state.buffer + state.pos, locals.i) < 0)
+			return (sb_clear(&locals.builder));
+		state.pos += locals.i;
+		if (state.buffer[state.pos - 1] == '\n')
+			return (sb_pop_all(&locals.builder));
 	}
-
 }
